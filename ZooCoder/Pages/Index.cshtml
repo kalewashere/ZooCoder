@@ -1,3 +1,68 @@
 ﻿@page
 @model IndexModel
 @using Microsoft.Data.Sqlite
+  <h1>Feeding Schedule for Como Zoo</h1>
+  <div class="text-center">
+    <img src="https://www.zoo-berlin.de/fileadmin/_processed_/4/7/csm_Rothschild-Giraffe_InventurPM_3e655e26ab.jpg" class="rounded" alt="Image of two Giraffes fighting over a leaf">
+  </div>
+  <style>
+        h1 {
+            text-align: center;
+        }
+        form, table {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 5px;
+        }
+</style>
+  @{
+
+    // Create the SQL server connection your SQL Server connection
+
+    string connectionString = "DataSource=FeedingSchedules.db";
+
+    using (SqliteConnection connection = new SqliteConnection(connectionString))
+
+    {
+
+        //Open the SQL Server connection
+
+        connection.Open();
+        string sqlQuery = "SELECT E.first_name AS ZooKeeperName, A.name AS AnimalName, A.species AS AnimalSpecies, FT.feeding_time AS FeedingTime FROM Animals AS A JOIN Employees AS E ON A.employee_id = E.employee_id JOIN FeedingTimes AS FT ON A.feeding_time = FT.feeding_time ORDER BY ZooKeeperName, FeedingTime";
+        using (SqliteCommand command = new SqliteCommand(sqlQuery, connection))
+{
+     using (SqliteDataReader reader = command.ExecuteReader())
+     {
+        <table class="table table-dark table-striped table-hover">
+     <thead>
+          <tr>
+               <th>ZooKeeper</th>
+               <th>Animal</th>
+               <th>Species</th>
+               <th>Feeding Time</th>
+          </tr>
+     </thead>
+<tbody>
+       @while (reader.Read()){
+      string zooKeeperName = reader["ZooKeeperName"].ToString();
+      string animalName = reader["AnimalName"].ToString();
+      string animalSpecies = reader["AnimalSpecies"].ToString();
+      string feedingTime = reader["FeedingTime"].ToString();
+      <tr>
+         <td>@zooKeeperName</td>
+         <td>@animalName</td>
+         <td>@animalSpecies</td>
+         <td>@feedingTime</td>
+      </tr>
+   }
+</tbody>
+</table>
+            }
+        }
+    }
+}
