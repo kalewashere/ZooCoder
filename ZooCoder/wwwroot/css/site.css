@@ -4,6 +4,14 @@ html {
   
 }
 
+
+tr td:hover {
+  font-size: larger;
+  color: gold;
+}
+
+
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
